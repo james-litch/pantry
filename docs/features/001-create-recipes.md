@@ -1,7 +1,10 @@
 # 001 — Create, list, and view recipes
 
-Status: draft
+Status: ready
 Dependencies: Existing Rails scaffold and verification workflow
+
+The owner has approved this spec. The current work is specification-only;
+implementation will begin on a separate request.
 
 ## Outcome
 
@@ -48,8 +51,8 @@ whitespace-only values. A section cannot be empty, and a recipe cannot have no
 sections or no steps. Invalid submitted rows produce errors rather than silently
 disappearing. Removing unsaved rows is an explicit form action.
 
-Proposed amount conventions for review: quantity is optional to support ingredients
-such as "salt, to taste". When supplied, it must be a positive decimal number;
+Quantity is optional to support ingredients such as salt and pepper without a
+specified amount. When supplied, it must be a positive decimal number;
 fractions are entered as decimals (e.g. 0.5). Unit is optional free text (e.g. g,
 ml, tbsp); unitless counts are allowed. No unit catalogue, conversion, or scaling
 is included. Blank quantities remain absent rather than becoming zero.
@@ -62,12 +65,35 @@ On validation failure, explain the errors and preserve the submitted values and
 structure so the owner can correct them. Do not leave a partially saved recipe.
 Treat recipe content as plain text and render it safely.
 
+Retained input includes invalid quantity text, optional fields, and every submitted
+section, ingredient, and step in its submitted order. Errors must identify the
+affected field and row so repeated ingredient or step inputs can be distinguished.
+Correcting a failed submission must not require rebuilding the recipe.
+
 Use labelled inputs and keyboard-operable controls. Ensure the form and saved
 result can be used at narrow mobile and desktop widths. No visual design has been
 specified; use the existing Rails/Hotwire/Tailwind stack and conventional forms.
+Follow the styling and interactivity guidance in `AGENTS.md`: Tailwind v4,
+CSS-variable theme tokens in `app/assets/tailwind/application.css`, no `@apply`,
+and Turbo/Stimulus for interactivity.
 
 This is a single-owner feature for local/private access, with no per-user record
 ownership yet. Do not describe the absence of sign-in as an access-control feature.
+
+### Form interactions
+
+- Open a new form with one blank ingredient section containing one ingredient row,
+  and one blank preparation step. These are editable inputs, not saved records.
+- Add new sections and steps at the end; add ingredients at the end of their
+  containing section. A new section starts with one blank ingredient row.
+- Removing a section also removes its unsaved ingredient rows. Removing a row
+  retains the relative order of the remaining rows.
+- Allow removal of the last section, ingredient, or step. Saving that incomplete
+  structure produces the required-structure errors described above, with an add
+  action available to correct it.
+- After adding, focus the first input in the new row or section. After removing,
+  move focus to a remaining control in the same group, or its add action, so
+  keyboard users can continue editing.
 
 ## Acceptance criteria
 
@@ -84,6 +110,8 @@ ownership yet. Do not describe the absence of sign-in as an access-control featu
   then the form shows relevant errors, retains entered values, and saves no partial
   recipe. Missing/blank title, section name, ingredient name, or step text; empty
   sections; no sections; and no steps are invalid. A blank description is valid.
+  Errors identify the affected field and row, including when a later section or
+  step is invalid. Correcting the errors and saving persists the complete recipe.
 - AC5: Given recipe text containing HTML-like content, when the saved recipe is
   displayed, then it is treated as text rather than executable markup.
 - AC6: Given the creation flow on desktop or mobile, when the owner navigates with
@@ -93,7 +121,7 @@ ownership yet. Do not describe the absence of sign-in as an access-control featu
   newest first and each links to its own detail page.
 - AC8: Given a saved recipe, when its detail page is opened directly or refreshed,
   then all saved content is shown. A nonexistent recipe returns HTTP 404.
-- AC9 (proposed amount conventions): Given separate ingredient fields, when a
+- AC9: Given separate ingredient fields, when a
   quantity is supplied, then a positive decimal such as 0.5 is saved without
   rounding to an integer; zero, negative, and nonnumeric values fail validation.
   Missing quantity or unit is allowed, and absent amounts produce no stray zero
@@ -107,8 +135,8 @@ ownership yet. Do not describe the absence of sign-in as an access-control featu
 - Creation is atomic: failure in any section, ingredient, or step saves none of the
   submitted recipe.
 - Store ingredient name, quantity, and unit separately. Use decimal storage for
-  quantities rather than floating point. Follow the proposed amount conventions
-  above if approved; do not invent catalogue ingredient references.
+  quantities rather than floating point. Follow the agreed amount conventions
+  above; do not invent catalogue ingredient references.
 - Recipe titles and ingredient names need not be unique. A recipe may repeat an
   ingredient across or within sections.
 - Do not add placeholder users, inventory records, or catalogue entries for future
@@ -118,25 +146,34 @@ ownership yet. Do not describe the absence of sign-in as an access-control featu
 
 - AC1–AC2: Integration/model tests for persistence, relationships, and ordering;
   a system test for creating and viewing a multi-section recipe.
-- AC3: System test for adding/removing nested form inputs without losing content.
+- AC3: System test for initial rows and adding/removing nested form inputs without
+  losing content. Cover append order, removal of a section with ingredients, and
+  removal of the last row followed by validation and correction.
 - AC4: Tests for the agreed required fields and atomic failure; a system test for
-  correcting invalid input while retaining the rest of the form.
+  correcting invalid input while retaining the rest of the form. Include an
+  invalid ingredient in a later section and an invalid later step; verify no
+  recipe, section, ingredient, or step records remain from either failed save.
+  Verify invalid quantity text is retained, not replaced with zero or blank.
 - AC5: Request or system test confirming recipe content is escaped on display.
+  Cover title, description, section name, ingredient name, free-text unit, and
+  step text, including script-like input.
 - AC6: Browser inspection at mobile and desktop widths, including keyboard input,
-  focus, labels, and validation errors; record evidence during implementation.
+  focus after adding/removing rows, labels, and validation errors; record evidence
+  during implementation.
+  Inspect the empty list, populated list, creation form, failed submission, and
+  saved detail page. Check long content and multiple rows at both widths.
 - AC7–AC8: Integration tests for list order, empty state, detail content, and 404;
   extend the creation system test to navigate from the list to the saved recipe.
 - AC9: Model/integration tests for optional amounts, positive decimal persistence,
   and rejected invalid quantities; check display of unitless and absent amounts.
+  Cover `0.5` with `tbsp`, `2` without a unit, no quantity with `to taste`, and
+  salt and pepper entries with neither quantity nor unit. Reject `0`,
+  `-1`, `abc`, and `1/2`; ensure failure retains the original amount inputs.
 - Run `bin/ci` before handoff. These are planned checks, not completed verification.
 
 ## Open questions
 
-Review the proposed amount conventions: optional positive decimal quantity and
-optional free-text unit, with no fractions parser or conversions. The owner has
-confirmed separate ingredient fields, required recipe structure, and create/list/
-view scope. Interaction details and amount conventions are proposals until the
-owner approves this draft or requests its implementation.
+None.
 
 ## Implementation evidence
 

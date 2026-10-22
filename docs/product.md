@@ -1,6 +1,6 @@
 # Pantry product brief
 
-Status: initial product direction confirmed; first feature details in draft
+Status: initial product direction confirmed; first feature spec approved
 
 ## Purpose and users
 
@@ -19,7 +19,8 @@ and its authentication requirements need a separate decision before deployment.
 - Group recipe ingredients into sections, each able to contain many ingredients.
 - Require at least one named section with ingredients and at least one recipe step.
 - Enter ingredients using separate name, quantity, and unit fields.
-- Define remaining amount conventions and interaction details in the first spec.
+- Allow optional positive decimal quantities and optional free-text units, as
+  defined with the interaction details in the first spec.
 
 ## Terminology
 
@@ -54,5 +55,5 @@ The existing stack is Rails, PostgreSQL, Hotwire, Tailwind, and Minitest.
 ## Feature specs
 
 The first feature is [create, list, and view recipes](features/001-create-recipes.md), currently
-a draft. See [the workflow](workflow.md) for drafting, implementation, and
+ready for implementation. See [the workflow](workflow.md) for drafting, implementation, and
 verification, and use [the template](features/_template.md) for later features.
