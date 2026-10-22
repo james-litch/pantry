@@ -26,6 +26,21 @@
 - Small fixes and documentation changes need no new spec. Record significant,
   lasting technical choices in `docs/decisions/`, not routine implementation steps.
 
+## Styling and interactivity
+
+- Use Tailwind CSS v4 and its CSS-first configuration conventions. Prefer utility
+  classes in templates and follow the installed v4 version's best practices.
+- Define all custom theme tokens as CSS variables in
+  `app/assets/tailwind/application.css`. Use top-level `@theme` for tokens that
+  generate Tailwind utilities; use `:root` for variables that do not need utilities.
+  Reuse tokens through utility classes or `var(--token-name)` in custom CSS.
+  See the [Tailwind theme documentation](https://tailwindcss.com/docs/theme).
+- Do not use `@apply`. Do not edit the generated `app/assets/builds/tailwind.css`.
+- Use Turbo for navigation, form submissions, and server-rendered updates, with
+  Frames or Streams where appropriate. Use Stimulus controllers for client-side
+  interactions such as nested form rows and focus management. Keep controllers
+  compatible with Turbo navigation and use the existing import-map setup.
+
 ## Verification and handoff
 
 - Setup: `bin/setup --skip-server`. Development: `bin/dev`.

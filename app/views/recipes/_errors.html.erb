@@ -1,0 +1,5 @@
+<% if form.object.errors[attribute].any? %>
+  <p id="<%= form.field_id(attribute, :error) %>" class="mt-2 text-sm font-medium text-danger">
+    <%= form.object.errors.full_messages_for(attribute).join(". ") %>
+  </p>
+<% end %>

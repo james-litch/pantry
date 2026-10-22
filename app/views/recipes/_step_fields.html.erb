@@ -1,0 +1,7 @@
+<fieldset data-nested-fields-target="item" class="min-w-0 rounded-xl border border-line bg-white p-4 sm:p-6">
+  <legend data-row-label class="px-2 font-semibold">Step <%= form.index.to_i + 1 %></legend>
+  <%= form.label :instruction, "Instruction", class: "text-sm font-medium" %>
+  <%= form.text_area :instruction, recipe_input_options(form, :instruction).merge(rows: 3) %>
+  <%= render "errors", form: form, attribute: :instruction %>
+  <button type="button" data-action="nested-fields#remove" class="mt-3 min-h-11 rounded px-2 text-sm text-danger underline-offset-4 hover:underline">Remove step</button>
+</fieldset>

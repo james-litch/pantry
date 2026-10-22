@@ -1,0 +1,63 @@
+<% content_for :title, "New recipe · Pantry" %>
+<div class="max-w-3xl">
+  <%= link_to "← All recipes", root_path, class: "inline-block rounded py-2 text-sm font-semibold underline-offset-4 hover:underline" %>
+  <h1 class="mt-6 font-editorial text-4xl sm:text-5xl">A recipe to keep</h1>
+  <p class="mt-4 text-muted">Start with the ingredients. Bring it together, step by step.</p>
+  <p class="mt-2 text-sm text-muted">All fields are required unless marked optional.</p>
+
+  <%= form_with model: @recipe, class: "mt-8 space-y-10", html: { novalidate: true } do |form| %>
+    <% if @recipe.errors.any? %>
+      <div role="alert" tabindex="-1" data-controller="form-errors" class="rounded-xl border border-danger bg-white p-5 text-danger">
+        <h2 class="font-semibold">Your recipe hasn’t been saved yet</h2>
+        <p class="mt-2">Check the highlighted fields and missing sections below. Your entries are still here.</p>
+      </div>
+    <% end %>
+    <section aria-labelledby="details-heading" class="space-y-5">
+      <h2 id="details-heading" class="font-editorial text-2xl">The basics</h2>
+      <div>
+        <%= form.label :title, "Recipe title", class: "text-sm font-medium" %>
+        <%= form.text_field :title, recipe_input_options(form, :title) %>
+        <%= render "errors", form: form, attribute: :title %>
+      </div>
+      <div>
+        <%= form.label :description, "Description (optional)", class: "text-sm font-medium" %>
+        <%= form.text_area :description, recipe_input_options(form, :description).merge(rows: 3) %>
+      </div>
+    </section>
+    <section aria-labelledby="sections-heading" data-controller="nested-fields" data-nested-fields-placeholder-value="NEW_SECTION" data-nested-fields-label-value="Section">
+      <h2 id="sections-heading" class="font-editorial text-2xl">Ingredients</h2>
+      <p class="mt-2 mb-5 text-sm leading-relaxed text-muted">Group ingredients into sections, such as “For the sauce”. Use decimals for quantities (0.5, for example), or leave amounts blank for ingredients like salt and pepper.</p>
+      <%= render "errors", form: form, attribute: :ingredient_sections %>
+      <div data-nested-fields-target="list" class="space-y-6">
+        <%= form.fields_for :ingredient_sections do |section_form| %>
+          <%= render "section_fields", form: section_form %>
+        <% end %>
+      </div>
+      <template data-nested-fields-target="template">
+        <% section = IngredientSection.new; section.recipe_ingredients.build %>
+        <%= form.fields_for :ingredient_sections, section, child_index: "NEW_SECTION" do |section_form| %>
+          <%= render "section_fields", form: section_form %>
+        <% end %>
+      </template>
+      <button type="button" data-action="nested-fields#add" data-nested-fields-target="add" class="mt-4 min-h-11 rounded-lg border border-leaf px-4 py-2 font-semibold hover:bg-wash">Add section</button>
+    </section>
+    <section aria-labelledby="steps-heading" data-controller="nested-fields" data-nested-fields-placeholder-value="NEW_STEP" data-nested-fields-label-value="Step">
+      <h2 id="steps-heading" class="mb-5 font-editorial text-2xl">Preparation</h2>
+      <%= render "errors", form: form, attribute: :recipe_steps %>
+      <div data-nested-fields-target="list" class="space-y-5">
+        <%= form.fields_for :recipe_steps do |step_form| %>
+          <%= render "step_fields", form: step_form %>
+        <% end %>
+      </div>
+      <template data-nested-fields-target="template">
+        <%= form.fields_for :recipe_steps, RecipeStep.new, child_index: "NEW_STEP" do |step_form| %>
+          <%= render "step_fields", form: step_form %>
+        <% end %>
+      </template>
+      <button type="button" data-action="nested-fields#add" data-nested-fields-target="add" class="mt-4 min-h-11 rounded-lg border border-leaf px-4 py-2 font-semibold hover:bg-wash">Add step</button>
+    </section>
+    <div class="border-t border-line pt-6">
+      <%= form.submit "Save recipe", class: "min-h-12 cursor-pointer rounded-lg bg-leaf px-7 py-3 font-semibold text-white hover:bg-leaf-dark", data: { turbo_submits_with: "Saving…" } %>
+    </div>
+  <% end %>
+</div>
