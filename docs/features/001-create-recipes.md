@@ -6,6 +6,8 @@ Dependencies: Existing Rails scaffold and verification workflow
 The owner approved this spec and requested implementation. Verification evidence
 is recorded below.
 
+Draft PR: [#5 — Add recipe creation, listing, and details](https://github.com/james-litch/pantry/pull/5).
+
 ## Outcome
 
 The owner can save a recipe with a title, description, ingredient sections, and
