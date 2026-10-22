@@ -102,7 +102,7 @@ Production database names are unaffected.
 5. Open a draft PR; the owner reviews against the acceptance criteria and merges.
 
 The first spec is [create, list, and view recipes](docs/features/001-create-recipes.md).
-It is a draft for review; the recipe feature has not been implemented.
+It is approved and ready for implementation; the recipe feature has not been implemented.
 
 See [docs/workflow.md](docs/workflow.md) for details and reusable prompts.
 Store significant technical decisions in [docs/decisions/](docs/decisions/README.md).
