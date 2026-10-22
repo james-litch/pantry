@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <title><%= content_for(:title) || "Pantry" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -23,8 +23,18 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
-    <main class="container mx-auto mt-28 px-5 flex">
+  <body class="min-h-screen bg-paper text-ink antialiased">
+    <a href="#main" class="sr-only focus:not-sr-only focus:block focus:p-4">Skip to content</a>
+    <header class="border-b border-line">
+      <nav aria-label="Main" class="mx-auto flex max-w-5xl items-center justify-between px-5 py-5 sm:px-8">
+        <%= link_to "Pantry", root_path, class: "font-editorial text-3xl tracking-tight" %>
+        <%= link_to "All recipes", root_path, class: "rounded py-2 text-sm font-semibold underline-offset-4 hover:underline" %>
+      </nav>
+    </header>
+    <main id="main" class="mx-auto max-w-5xl px-5 py-10 sm:px-8 sm:py-14">
+      <% if notice %>
+        <p role="status" class="mb-8 rounded-xl bg-wash px-5 py-4"><%= notice %></p>
+      <% end %>
       <%= yield %>
     </main>
   </body>

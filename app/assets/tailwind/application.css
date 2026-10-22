@@ -1,1 +1,22 @@
 @import "tailwindcss";
+
+@theme {
+  --color-paper: #f8f7f2;
+  --color-ink: #26382e;
+  --color-muted: #59675e;
+  --color-leaf: #345c43;
+  --color-leaf-dark: #23432f;
+  --color-wash: #edf1e8;
+  --color-line: #cdd4c8;
+  --color-danger: #a02e27;
+  --font-editorial: Georgia, "Times New Roman", serif;
+}
+
+@layer base {
+  :focus-visible {
+    outline: 3px solid var(--color-leaf);
+    outline-offset: 3px;
+  }
+  button, a, input, textarea { -webkit-tap-highlight-color: transparent; }
+  button { cursor: pointer; }
+}

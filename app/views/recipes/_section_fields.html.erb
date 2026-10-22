@@ -1,0 +1,23 @@
+<fieldset data-nested-fields-target="item" class="min-w-0 rounded-xl border border-line bg-wash p-4 sm:p-6">
+  <legend data-row-label class="px-2 font-semibold">Section <%= form.index.to_i + 1 %></legend>
+  <div class="mb-5">
+    <%= form.label :name, "Section name", class: "text-sm font-medium" %>
+    <%= form.text_field :name, recipe_input_options(form, :name) %>
+    <%= render "errors", form: form, attribute: :name %>
+  </div>
+  <div data-controller="nested-fields" data-nested-fields-placeholder-value="NEW_INGREDIENT" data-nested-fields-label-value="Ingredient">
+    <%= render "errors", form: form, attribute: :recipe_ingredients %>
+    <div data-nested-fields-target="list" class="space-y-4">
+      <%= form.fields_for :recipe_ingredients do |ingredient_form| %>
+        <%= render "ingredient_fields", form: ingredient_form %>
+      <% end %>
+    </div>
+    <template data-nested-fields-target="template">
+      <%= form.fields_for :recipe_ingredients, RecipeIngredient.new, child_index: "NEW_INGREDIENT" do |ingredient_form| %>
+        <%= render "ingredient_fields", form: ingredient_form %>
+      <% end %>
+    </template>
+    <button type="button" data-action="nested-fields#add" data-nested-fields-target="add" class="mt-4 min-h-11 rounded-lg border border-leaf px-4 py-2 text-sm font-semibold hover:bg-white">Add ingredient</button>
+  </div>
+  <button type="button" data-action="nested-fields#remove" class="mt-3 min-h-11 rounded px-2 text-sm text-danger underline-offset-4 hover:underline">Remove section</button>
+</fieldset>

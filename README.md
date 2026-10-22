@@ -30,7 +30,7 @@ Start Rails and the Tailwind watcher:
 bin/dev
 ```
 
-Open <http://localhost:3000>. The scaffold has no product homepage yet; `/up` is
+Open <http://localhost:3000> to browse recipes or create your first one. `/up` is
 the application health endpoint. `bin/dev` installs Foreman if it is missing.
 
 By default, local databases are `pantry_development` and `pantry_test`.
@@ -41,7 +41,7 @@ Rails does not automatically load `.env` files in this project.
 `config/master.key` is ignored by Git. Obtain the development key through a secure
 channel only if a feature needs encrypted credentials; do not use production
 credentials for development or tests. No external service credentials are needed
-for the current health checks.
+for the recipe feature or health checks.
 
 ## Verification
 
@@ -68,8 +68,9 @@ bin/rubocop
 
 System-test failure screenshots are saved in `tmp/screenshots`; GitHub Actions
 uploads them on failure. CI runs the same test, style, security, and seed checks.
-The initial tests verify application boot, routing, and browser connectivity;
-they do not establish product behaviour or the health of every dependency.
+Tests cover recipe creation, validation, persistence, listing, details, and nested
+form interactions, alongside application boot and browser connectivity. See the
+feature spec for acceptance coverage and visual verification evidence.
 
 If PostgreSQL connection fails, check that the service is running (`pg_isready`)
 and that your role exists. In sandboxed agent sessions, database sockets, browser
@@ -102,7 +103,9 @@ Production database names are unaffected.
 5. Open a draft PR; the owner reviews against the acceptance criteria and merges.
 
 The first spec is [create, list, and view recipes](docs/features/001-create-recipes.md).
-It is approved and ready for implementation; the recipe feature has not been implemented.
+It is implemented and verified. Recipes support ordered ingredient sections,
+optional positive decimal quantities and free-text units, and preparation steps.
+Saving invalid input retains the form and explains what needs correcting.
 
 See [docs/workflow.md](docs/workflow.md) for details and reusable prompts.
 Store significant technical decisions in [docs/decisions/](docs/decisions/README.md).

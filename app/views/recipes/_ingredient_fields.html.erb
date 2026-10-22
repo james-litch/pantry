@@ -1,0 +1,20 @@
+<fieldset data-nested-fields-target="item" class="min-w-0 rounded-xl border border-line bg-white p-4">
+  <legend data-row-label class="px-1 text-sm font-semibold">Ingredient <%= form.index.to_i + 1 %></legend>
+  <div class="grid grid-cols-2 gap-4 sm:grid-cols-4">
+    <div class="col-span-2">
+      <%= form.label :name, "Ingredient name", class: "text-sm font-medium" %>
+      <%= form.text_field :name, recipe_input_options(form, :name) %>
+      <%= render "errors", form: form, attribute: :name %>
+    </div>
+    <div>
+      <%= form.label :quantity, "Quantity (optional)", class: "text-sm font-medium" %>
+      <%= form.text_field :quantity, recipe_input_options(form, :quantity).merge(inputmode: "decimal", value: form.object.quantity_before_type_cast) %>
+      <%= render "errors", form: form, attribute: :quantity %>
+    </div>
+    <div>
+      <%= form.label :unit, "Unit (optional)", class: "text-sm font-medium" %>
+      <%= form.text_field :unit, recipe_input_options(form, :unit) %>
+    </div>
+  </div>
+  <button type="button" data-action="nested-fields#remove" class="mt-3 min-h-11 rounded px-2 text-sm text-danger underline-offset-4 hover:underline">Remove ingredient</button>
+</fieldset>

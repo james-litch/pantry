@@ -1,10 +1,10 @@
 # 001 — Create, list, and view recipes
 
-Status: ready
+Status: implemented
 Dependencies: Existing Rails scaffold and verification workflow
 
-The owner has approved this spec. The current work is specification-only;
-implementation will begin on a separate request.
+The owner approved this spec and requested implementation. Verification evidence
+is recorded below.
 
 ## Outcome
 
@@ -169,7 +169,7 @@ ownership yet. Do not describe the absence of sign-in as an access-control featu
   Cover `0.5` with `tbsp`, `2` without a unit, no quantity with `to taste`, and
   salt and pepper entries with neither quantity nor unit. Reject `0`,
   `-1`, `abc`, and `1/2`; ensure failure retains the original amount inputs.
-- Run `bin/ci` before handoff. These are planned checks, not completed verification.
+- Run `bin/ci` before handoff. Completed verification is recorded below.
 
 ## Open questions
 
@@ -177,5 +177,40 @@ None.
 
 ## Implementation evidence
 
-Not implemented. The project foundation has boot and browser smoke tests, which
-do not verify this feature. Record actual coverage and results here when built.
+Verified locally on 2026-10-22:
+
+- AC1–AC2: `test/models/recipe_test.rb` and `test/integration/recipes_test.rb`
+  cover atomic nested creation, section membership, persisted positions, and
+  decimal/absent quantities. The creation system test saves two sections with
+  multiple ingredients, then navigates from the list and refreshes the detail.
+- AC3–AC4: `test/system/recipes_test.rb` covers initial rows, appending and
+  removing every row type, removing a section with ingredients, focus placement,
+  removal of the last rows, validation, and correction. Model tests assert that
+  invalid later ingredients or steps leave all four record counts unchanged.
+  Request and system tests retain optional fields and invalid quantity text.
+- AC5: Request tests verify escaped title, description, section name, ingredient
+  name, unit, and instruction, including script-like content on detail/list pages.
+- AC6: Visually inspected empty/populated lists, new/invalid forms, and saved
+  details at 390px mobile and 1400px desktop widths, including long content and
+  multiple rows. Labels, readable errors, and lack of horizontal overflow are
+  also checked by system tests. Manually used Enter to add/remove ingredients,
+  checked focus movement, and corrected and saved a failed form in the browser.
+- AC7–AC8: Request tests cover empty state, newest-first links, direct/repeated
+  detail requests, and HTTP 404 for a missing recipe.
+- AC9: Tests cover `0.5 tbsp`, unitless `2`, `to taste` without a quantity, and
+  salt/pepper with neither amount field. `0`, `-1`, `abc`, `1/2`, non-finite values,
+  and mixed number/text input are rejected without losing the original text.
+- Database checks cover required text, positive finite quantities, nonnegative
+  positions, unique positions within each parent, and foreign keys. Minimum child
+  counts are enforced by model validation when saving the nested recipe.
+- `bin/ci`: passed setup, RuboCop (38 files), gem/import-map audits, Brakeman
+  (zero warnings), Rails tests (12 tests, 180 assertions), test seeds, and Chrome
+  system tests (5 tests, 102 assertions). No failures, errors, or skips.
+- Full-page screenshots can be regenerated with
+  `VISUAL_REVIEW=1 bin/rails test test/system/recipes_test.rb --include=/AC6_responsive/`.
+  This check also passed (1 test, 50 assertions); images are stored locally in
+  `tmp/screenshots/recipes-*.png` and are not committed.
+
+No known acceptance gaps remain. The feature remains scoped to local/private
+access, with no accounts or saved-recipe editing/deletion. The migration adds
+four tables and must run when setting up an existing checkout.

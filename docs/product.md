@@ -1,6 +1,6 @@
 # Pantry product brief
 
-Status: initial product direction confirmed; first feature spec approved
+Status: initial product direction confirmed; first feature implemented
 
 ## Purpose and users
 
@@ -54,6 +54,6 @@ The existing stack is Rails, PostgreSQL, Hotwire, Tailwind, and Minitest.
 
 ## Feature specs
 
-The first feature is [create, list, and view recipes](features/001-create-recipes.md), currently
-ready for implementation. See [the workflow](workflow.md) for drafting, implementation, and
+The first feature is [create, list, and view recipes](features/001-create-recipes.md),
+implemented and verified. See [the workflow](workflow.md) for drafting, implementation, and
 verification, and use [the template](features/_template.md) for later features.
